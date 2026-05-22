@@ -9,15 +9,23 @@ import {
   FaCog,
   FaCalculator,
   FaMotorcycle,
-  FaCheckCircle,
 } from "react-icons/fa";
 
 const logo = "/logo.png";
 
 export default function App() {
 
-  const kapasitas = 3774;
+  /* =========================
+     DATA SISTEM
+  ========================== */
+
+  const kapasitasBattery = 3774;
   const chargerCRI = 1.4;
+  const efisiensi = 0.92;
+
+  /* =========================
+     STATE
+  ========================== */
 
   const [sisaBattery, setSisaBattery] =
     useState(40);
@@ -25,14 +33,47 @@ export default function App() {
   const [kemampuanCharger, setKemampuanCharger] =
     useState(28);
 
-  const isiKwh =
-    kapasitas * ((100 - sisaBattery) / 100);
+  /* =========================
+     PERHITUNGAN
+  ========================== */
 
+  // kebutuhan isi battery
+  const isiKwh =
+    kapasitasBattery *
+    ((100 - sisaBattery) / 100);
+
+  // total watt charger
   const totalWatt =
-    chargerCRI * kemampuanCharger * 60;
+    chargerCRI *
+    kemampuanCharger *
+    60;
+
+  // progress charging
+  const progress =
+    100 - sisaBattery;
+
+  /*
+    RUMUS BARU
+
+    estimasi jam =
+    isiKwh /
+    (kemampuan charger × chargerCRI × efisiensi)
+  */
+
+  const estimasiJam =
+    isiKwh /
+    (
+      kemampuanCharger *
+      chargerCRI *
+      efisiensi
+    );
 
   const estimasiMenit =
-    isiKwh / (totalWatt / 100);
+    estimasiJam * 60;
+
+  /* =========================
+     FORMAT DURASI
+  ========================== */
 
   let formatDurasi = "";
 
@@ -53,20 +94,31 @@ export default function App() {
       `${jam} Jam ${menit} Menit`;
   }
 
+  /* =========================
+     BIAYA
+  ========================== */
+
   const biayaSPKLU =
     (isiKwh / 1000) * 2466;
 
   const biayaRumah =
     (isiKwh / 1000) * 1444.7;
 
+  /* =========================
+     RETURN
+  ========================== */
+
   return (
 
     <div className="min-h-screen bg-black text-white flex">
 
-      {/* SIDEBAR */}
+      {/* ================= SIDEBAR ================= */}
+
       <div className="w-72 bg-[#050505] border-r border-zinc-800 p-4 hidden lg:flex flex-col justify-between">
 
         <div>
+
+          {/* LOGO */}
 
           <div className="text-center mb-10">
 
@@ -85,12 +137,32 @@ export default function App() {
 
           </div>
 
-          <Menu icon={<FaHome />} text="Dashboard" active />
-          <Menu icon={<FaCalculator />} text="Perhitungan" />
-          <Menu icon={<FaHistory />} text="Riwayat" />
-          <Menu icon={<FaCog />} text="Pengaturan" />
+          {/* MENU */}
+
+          <Menu
+            icon={<FaHome />}
+            text="Dashboard"
+            active
+          />
+
+          <Menu
+            icon={<FaCalculator />}
+            text="Perhitungan"
+          />
+
+          <Menu
+            icon={<FaHistory />}
+            text="Riwayat"
+          />
+
+          <Menu
+            icon={<FaCog />}
+            text="Pengaturan"
+          />
 
         </div>
+
+        {/* FOOTER SIDEBAR */}
 
         <div className="bg-zinc-900 rounded-3xl p-4 text-center border border-zinc-800">
 
@@ -111,10 +183,12 @@ export default function App() {
 
       </div>
 
-      {/* CONTENT */}
+      {/* ================= CONTENT ================= */}
+
       <div className="flex-1 p-4 md:p-6">
 
         {/* HERO */}
+
         <div className="relative overflow-hidden rounded-[35px] mb-6 border border-zinc-800 bg-gradient-to-r from-red-600 via-white to-green-700">
 
           <div className="bg-black/40 p-8 md:p-10 flex items-center justify-between">
@@ -141,7 +215,8 @@ export default function App() {
 
         </div>
 
-        {/* CARDS */}
+        {/* ================= TOP CARD ================= */}
+
         <div className="grid md:grid-cols-4 gap-4 mb-6">
 
           <Card
@@ -170,10 +245,12 @@ export default function App() {
 
         </div>
 
-        {/* CONTENT GRID */}
+        {/* ================= GRID ================= */}
+
         <div className="grid lg:grid-cols-2 gap-6">
 
           {/* INPUT */}
+
           <div className="bg-zinc-950 border border-zinc-800 rounded-[30px] p-6">
 
             <h2 className="text-3xl font-black mb-6">
@@ -200,7 +277,8 @@ export default function App() {
 
           </div>
 
-          {/* RESULT */}
+          {/* HASIL */}
+
           <div className="bg-zinc-950 border border-zinc-800 rounded-[30px] p-6">
 
             <h2 className="text-3xl font-black mb-6">
@@ -237,55 +315,71 @@ export default function App() {
 
         </div>
 
-        {/* BOTTOM */}
+        {/* ================= BOTTOM ================= */}
+
         <div className="grid lg:grid-cols-2 gap-6 mt-6">
 
           {/* PROGRESS */}
+
           <div className="bg-zinc-950 border border-zinc-800 rounded-[30px] p-6">
 
             <h2 className="text-3xl font-black mb-6">
               PROGRESS CHARGING
             </h2>
 
-            <div className="relative w-64 h-64 mx-auto">
-
-              <div className="absolute inset-0 rounded-full border-[20px] border-red-500" />
+            <div className="w-full bg-zinc-800 rounded-full h-7 overflow-hidden">
 
               <div
-                className="absolute inset-0 rounded-full border-[20px] border-green-500"
+                className="bg-green-500 h-7 transition-all duration-500"
                 style={{
-                  clipPath:
-                    `polygon(0 0, ${100 - sisaBattery}% 0, ${100 - sisaBattery}% 100%, 0 100%)`
+                  width: `${progress}%`
                 }}
               />
 
-              <div className="absolute inset-0 flex items-center justify-center flex-col">
+            </div>
 
-                <h1 className="text-6xl font-black text-green-500">
-                  {100 - sisaBattery}%
-                </h1>
+            <div className="text-center mt-10">
 
-                <p className="text-zinc-400">
-                  Sedang Mengisi
-                </p>
+              <h1 className="text-7xl font-black text-green-500">
+                {progress}%
+              </h1>
 
-              </div>
+              <p className="text-zinc-400 text-xl mt-2">
+                Sedang Mengisi
+              </p>
 
             </div>
 
           </div>
 
-          {/* SYSTEM */}
+          {/* SISTEM */}
+
           <div className="bg-zinc-950 border border-zinc-800 rounded-[30px] p-6">
 
             <h2 className="text-3xl font-black mb-6">
               INFORMASI SISTEM
             </h2>
 
-            <Sys label="Kapasitas Battery" value="3,774 Wh" />
-            <Sys label="Tegangan Sistem" value="72V" />
-            <Sys label="Tipe Charger" value="AC" />
-            <Sys label="Status" value="Aktif" green />
+            <Sys
+              label="Kapasitas Battery"
+              value="3,774 Wh"
+            />
+
+            <Sys
+              label="Tegangan Sistem"
+              value="72V"
+            />
+
+            <Sys
+              label="Tipe Charger"
+              value="AC"
+            />
+
+            <Sys
+              label="Status"
+              value="Aktif"
+              green
+            />
 
           </div>
 
@@ -297,7 +391,15 @@ export default function App() {
   );
 }
 
-function Menu({ icon, text, active }) {
+/* =========================
+   COMPONENT MENU
+========================== */
+
+function Menu({
+  icon,
+  text,
+  active,
+}) {
 
   return (
 
@@ -319,7 +421,15 @@ function Menu({ icon, text, active }) {
   );
 }
 
-function Card({ icon, title, value }) {
+/* =========================
+   CARD
+========================== */
+
+function Card({
+  icon,
+  title,
+  value,
+}) {
 
   return (
 
@@ -341,7 +451,15 @@ function Card({ icon, title, value }) {
   );
 }
 
-function Input({ label, value, setValue }) {
+/* =========================
+   INPUT
+========================== */
+
+function Input({
+  label,
+  value,
+  setValue,
+}) {
 
   return (
 
@@ -364,7 +482,15 @@ function Input({ label, value, setValue }) {
   );
 }
 
-function Result({ label, value, red }) {
+/* =========================
+   RESULT
+========================== */
+
+function Result({
+  label,
+  value,
+  red,
+}) {
 
   return (
 
@@ -386,7 +512,15 @@ function Result({ label, value, red }) {
   );
 }
 
-function Sys({ label, value, green }) {
+/* =========================
+   SYS
+========================== */
+
+function Sys({
+  label,
+  value,
+  green,
+}) {
 
   return (
 

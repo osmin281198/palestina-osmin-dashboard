@@ -8,10 +8,10 @@ import {
   FaHistory,
   FaCog,
   FaCalculator,
-  FaMotorcycle,
 } from "react-icons/fa";
 
 const logo = "/logo.png";
+const motor = "/motor.png";
 
 export default function App() {
 
@@ -23,7 +23,7 @@ export default function App() {
     useState("dashboard");
 
   /* =========================
-     DATA SISTEM
+     DATA
   ========================== */
 
   const kapasitasBattery = 3774;
@@ -44,30 +44,28 @@ export default function App() {
      PERHITUNGAN
   ========================== */
 
+  // isi daya
+
   const isiKwh =
     kapasitasBattery *
     ((100 - sisaBattery) / 100);
 
-  /*
-    kemampuan charger × 84
-  */
+  // charger × 84
 
   const totalCharger =
     kemampuanCharger * 84;
 
+  // progress
+
   const progress =
     100 - sisaBattery;
 
-  /*
-    estimasi jam
-  */
+  // estimasi jam
 
   const estimasiJam =
     isiKwh / totalCharger;
 
-  /*
-    konversi ke menit
-  */
+  // ke menit
 
   const totalMenit =
     estimasiJam * 60;
@@ -191,33 +189,88 @@ export default function App() {
 
       <div className="flex-1 p-4 md:p-6">
 
+        {/* ================= DASHBOARD ================= */}
+
         {menu === "dashboard" && (
 
           <>
 
             {/* HERO */}
 
-            <div className="relative overflow-hidden rounded-[35px] mb-6 border border-zinc-800 bg-gradient-to-r from-red-600 via-white to-green-700">
+            <div className="relative overflow-hidden rounded-[35px] mb-6 border border-zinc-800 bg-black">
 
-              <div className="bg-black/40 p-8 md:p-10 flex items-center justify-between">
+              {/* STATUS */}
 
-                <div>
+              <div className="absolute top-4 right-5 z-10 flex items-center gap-2">
 
-                  <h1 className="text-5xl md:text-7xl font-black text-black">
-                    PALESTINA
-                  </h1>
+                <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
 
-                  <h2 className="text-4xl md:text-6xl font-black text-green-700">
-                    OSMIN
-                  </h2>
+                <span className="text-white text-sm md:text-base">
+                  Sistem Online
+                </span>
 
-                  <p className="text-black font-bold mt-3">
-                    POWER • UNITY • FREEDOM
-                  </p>
+              </div>
+
+              {/* HERO CONTENT */}
+
+              <div className="relative h-[220px] md:h-[320px] overflow-hidden">
+
+                {/* PUTIH */}
+
+                <div className="absolute inset-0 bg-white" />
+
+                {/* HIJAU */}
+
+                <div className="absolute bottom-0 left-0 w-full h-[30%] bg-green-700" />
+
+                {/* MERAH */}
+
+                <div
+                  className="absolute left-0 top-0 h-full w-[32%] bg-red-600"
+                  style={{
+                    clipPath:
+                      "polygon(0 0, 100% 50%, 0 100%)"
+                  }}
+                />
+
+                {/* OVERLAY */}
+
+                <div className="absolute inset-0 bg-black/5" />
+
+                {/* CONTENT */}
+
+                <div className="relative z-10 h-full flex items-center justify-between px-6 md:px-12">
+
+                  {/* TEXT */}
+
+                  <div>
+
+                    <h1 className="text-5xl md:text-8xl font-black text-black leading-none">
+                      PALESTINA
+                    </h1>
+
+                    <h2 className="text-4xl md:text-7xl font-black text-green-700 mt-2">
+                      OSMIN
+                    </h2>
+
+                    <p className="text-black text-lg md:text-2xl font-semibold mt-4">
+                      POWER • UNITY • FREEDOM
+                    </p>
+
+                  </div>
+
+                  {/* MOTOR */}
+
+                  <div className="hidden md:flex items-center justify-center">
+
+                    <img
+                      src={motor}
+                      className="w-[340px] drop-shadow-[0_0_15px_black]"
+                    />
+
+                  </div>
 
                 </div>
-
-                <FaMotorcycle className="text-[180px] text-black hidden md:block" />
 
               </div>
 
@@ -396,126 +449,6 @@ export default function App() {
 
         )}
 
-        {/* ================= PERHITUNGAN ================= */}
-
-        {menu === "perhitungan" && (
-
-          <div className="bg-zinc-950 border border-zinc-800 rounded-[30px] p-6">
-
-            <h1 className="text-4xl font-black mb-6">
-              FORM PERHITUNGAN
-            </h1>
-
-            <div className="grid md:grid-cols-2 gap-5">
-
-              <InputDummy
-                label="Kapasitas Battery"
-                value="3774"
-              />
-
-              <InputDummy
-                label="Tegangan"
-                value="72"
-              />
-
-              <InputDummy
-                label="Ampere Charger"
-                value="10"
-              />
-
-              <InputDummy
-                label="Konversi Charger"
-                value="84"
-              />
-
-            </div>
-
-            <button className="mt-6 bg-green-600 hover:bg-green-700 transition px-8 py-4 rounded-2xl font-bold">
-
-              Simpan Perhitungan
-
-            </button>
-
-          </div>
-
-        )}
-
-        {/* ================= RIWAYAT ================= */}
-
-        {menu === "riwayat" && (
-
-          <div className="bg-zinc-950 border border-zinc-800 rounded-[30px] p-6">
-
-            <h1 className="text-4xl font-black mb-6">
-              RIWAYAT CHARGER
-            </h1>
-
-            <div className="space-y-4">
-
-              <RiwayatCard
-                tanggal="20 Mei 2026"
-                charger="10A"
-                durasi="4 Jam 27 Menit"
-                biaya="Rp 10.400"
-              />
-
-              <RiwayatCard
-                tanggal="19 Mei 2026"
-                charger="8A"
-                durasi="5 Jam 10 Menit"
-                biaya="Rp 9.800"
-              />
-
-            </div>
-
-          </div>
-
-        )}
-
-        {/* ================= PENGATURAN ================= */}
-
-        {menu === "pengaturan" && (
-
-          <div className="bg-zinc-950 border border-zinc-800 rounded-[30px] p-6">
-
-            <h1 className="text-4xl font-black mb-6">
-              PENGATURAN CASAN
-            </h1>
-
-            <div className="space-y-5">
-
-              <InputDummy
-                label="Nama Charger"
-                value="Fast Charging 72V"
-              />
-
-              <InputDummy
-                label="Tegangan Default"
-                value="84"
-              />
-
-              <InputDummy
-                label="Tarif SPKLU"
-                value="2466"
-              />
-
-              <InputDummy
-                label="PPN"
-                value="12%"
-              />
-
-            </div>
-
-            <button className="mt-6 bg-green-600 hover:bg-green-700 transition px-8 py-4 rounded-2xl font-bold">
-
-              Simpan Pengaturan
-
-            </button>
-
-          </div>
-
-        )}
-
       </div>
 
     </div>
@@ -556,6 +489,10 @@ function Menu({
   );
 }
 
+/* =========================
+   CARD
+========================== */
+
 function Card({
   icon,
   title,
@@ -581,6 +518,10 @@ function Card({
     </div>
   );
 }
+
+/* =========================
+   INPUT
+========================== */
 
 function Input({
   label,
@@ -609,6 +550,10 @@ function Input({
   );
 }
 
+/* =========================
+   RESULT
+========================== */
+
 function Result({
   label,
   value,
@@ -635,6 +580,10 @@ function Result({
   );
 }
 
+/* =========================
+   SYS
+========================== */
+
 function Sys({
   label,
   value,
@@ -656,67 +605,6 @@ function Sys({
       }`}>
         {value}
       </span>
-
-    </div>
-  );
-}
-
-function InputDummy({
-  label,
-  value,
-}) {
-
-  return (
-
-    <div>
-
-      <label className="block mb-3 text-zinc-400">
-        {label}
-      </label>
-
-      <input
-        defaultValue={value}
-        className="w-full bg-black border border-zinc-700 rounded-2xl p-4"
-      />
-
-    </div>
-  );
-}
-
-function RiwayatCard({
-  tanggal,
-  charger,
-  durasi,
-  biaya,
-}) {
-
-  return (
-
-    <div className="bg-black border border-zinc-800 rounded-2xl p-5">
-
-      <div className="flex justify-between mb-3">
-
-        <h2 className="font-bold text-xl">
-          {tanggal}
-        </h2>
-
-        <span className="text-green-500 font-bold">
-          {charger}
-        </span>
-
-      </div>
-
-      <p className="text-zinc-400">
-        Durasi:
-        {" "}
-        {durasi}
-      </p>
-
-      <p className="text-zinc-400">
-        Biaya:
-        {" "}
-        {biaya}
-      </p>
 
     </div>
   );

@@ -64,8 +64,7 @@ export default function App() {
     isiKwh /
     (
       kemampuanCharger *
-      chargerCRI *
-      efisiensi
+      chargerCRI
     );
 
   const estimasiMenit =

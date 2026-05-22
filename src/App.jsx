@@ -21,7 +21,6 @@ export default function App() {
 
   const kapasitasBattery = 3774;
   const chargerCRI = 1.4;
-  const efisiensi = 0.92;
 
   /* =========================
      STATE
@@ -42,22 +41,20 @@ export default function App() {
     kapasitasBattery *
     ((100 - sisaBattery) / 100);
 
-  // total watt charger
+  // total watt
   const totalWatt =
     chargerCRI *
     kemampuanCharger *
     60;
 
-  // progress charging
+  // progress
   const progress =
     100 - sisaBattery;
 
   /*
-    RUMUS BARU
-
-    estimasi jam =
+    estimasi:
     isiKwh /
-    (kemampuan charger × chargerCRI × efisiensi)
+    (kemampuan charger × chargerCRI)
   */
 
   const estimasiJam =
@@ -102,10 +99,6 @@ export default function App() {
 
   const biayaRumah =
     (isiKwh / 1000) * 1444.7;
-
-  /* =========================
-     RETURN
-  ========================== */
 
   return (
 
@@ -161,7 +154,7 @@ export default function App() {
 
         </div>
 
-        {/* FOOTER SIDEBAR */}
+        {/* FOOTER */}
 
         <div className="bg-zinc-900 rounded-3xl p-4 text-center border border-zinc-800">
 
@@ -214,7 +207,7 @@ export default function App() {
 
         </div>
 
-        {/* ================= TOP CARD ================= */}
+        {/* ================= CARD ================= */}
 
         <div className="grid md:grid-cols-4 gap-4 mb-6">
 
@@ -276,7 +269,7 @@ export default function App() {
 
           </div>
 
-          {/* HASIL */}
+          {/* RESULT */}
 
           <div className="bg-zinc-950 border border-zinc-800 rounded-[30px] p-6">
 
@@ -391,7 +384,7 @@ export default function App() {
 }
 
 /* =========================
-   COMPONENT MENU
+   MENU
 ========================== */
 
 function Menu({

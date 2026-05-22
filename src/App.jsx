@@ -39,37 +39,60 @@ export default function App() {
      PERHITUNGAN
   ========================== */
 
-  // konversi Wh -> kWh
-  const isiKwh =
-    (kapasitasBattery / 1000) *
-    ((100 - sisaBattery) / 100);
+// =========================
+// PERHITUNGAN
+// =========================
 
-  // total watt charger
-  const totalWatt =
-    chargerCRI *
+// kapasitas terisi
+const isiKwh =
+  kapasitasBattery *
+  ((100 - sisaBattery) / 100);
+
+// total watt charger
+const totalWatt =
+  kemampuanCharger *
+  chargerCRI;
+
+// progress
+const progress =
+  100 - sisaBattery;
+
+/*
+  ESTIMASI DURASI
+
+  rumus:
+  isi kWh /
+  (kemampuan charger × chargerCRI)
+
+  hasil = menit
+*/
+
+const estimasiMenit =
+  isiKwh /
+  (
     kemampuanCharger *
-    60;
+    chargerCRI
+  );
 
-  // progress
-  const progress =
-    100 - sisaBattery;
+// format jam menit
+const jam =
+  Math.floor(estimasiMenit / 60);
 
-  /*
-    estimasi:
-    isiKwh /
-    (kemampuan charger × chargerCRI)
-  */
+const menit =
+  Math.round(estimasiMenit % 60);
 
-  const estimasiJam =
-    isiKwh /
-    (
-      kemampuanCharger *
-      chargerCRI
-    );
+let formatDurasi = "";
 
-  const estimasiMenit =
-    estimasiJam * 60;
+if (jam <= 0) {
 
+  formatDurasi =
+    `${menit} Menit`;
+
+} else {
+
+  formatDurasi =
+    `${jam} Jam ${menit} Menit`;
+}
   /* =========================
      FORMAT DURASI
   ========================== */

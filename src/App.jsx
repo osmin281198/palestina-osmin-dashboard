@@ -19,11 +19,8 @@ export default function App() {
      DATA SISTEM
   ========================== */
 
-  // kapasitas battery
+  // kapasitas battery (Wh)
   const kapasitasBattery = 3774;
-
-  // faktor charger
-  const chargerCRI = 1.4;
 
   // ppn SPKLU
   const ppn = 0.12;
@@ -35,6 +32,7 @@ export default function App() {
   const [sisaBattery, setSisaBattery] =
     useState(40);
 
+  // input ampere charger
   const [kemampuanCharger, setKemampuanCharger] =
     useState(10);
 
@@ -47,12 +45,20 @@ export default function App() {
     kapasitasBattery *
     ((100 - sisaBattery) / 100);
 
-  // total watt charger
-  const totalWatt =
-    kemampuanCharger *
-    chargerCRI;
+  /*
+    TOTAL CHARGER
 
-  // progress
+    kemampuan charger × 84
+
+    contoh:
+    10A × 84
+    = 840 watt
+  */
+
+  const totalCharger =
+    kemampuanCharger * 84;
+
+  // progress charging
   const progress =
     100 - sisaBattery;
 
@@ -60,26 +66,24 @@ export default function App() {
     ESTIMASI DURASI
 
     rumus:
-    isi kWh /
-    (kemampuan charger × chargerCRI)
+    isiKwh / total charger
 
-    hasil = menit
+    hasil jam
   */
 
-  const estimasiMenit =
-    isiKwh /
-    (
-      kemampuanCharger *
-      chargerCRI
-    );
+  const estimasiJam =
+    isiKwh / totalCharger;
+
+  // ubah ke menit
+  const totalMenit =
+    estimasiJam * 60;
 
   // format jam menit
-
   const jam =
-    Math.floor(estimasiMenit / 60);
+    Math.floor(totalMenit / 60);
 
   const menit =
-    Math.round(estimasiMenit % 60);
+    Math.round(totalMenit % 60);
 
   let formatDurasi = "";
 
@@ -98,11 +102,11 @@ export default function App() {
      BIAYA
   ========================== */
 
-  // biaya dasar
+  // biaya dasar SPKLU
   const biayaDasarSPKLU =
     (isiKwh / 1000) * 2466;
 
-  // include ppn 12%
+  // include PPN 12%
   const biayaSPKLU =
     biayaDasarSPKLU +
     (biayaDasarSPKLU * ppn);
@@ -218,7 +222,7 @@ export default function App() {
 
         </div>
 
-        {/* ================= CARD ================= */}
+        {/* ================= TOP CARD ================= */}
 
         <div className="grid md:grid-cols-4 gap-4 mb-6">
 
@@ -230,14 +234,14 @@ export default function App() {
 
           <Card
             icon={<FaBolt />}
-            title="ISI KWH"
+            title="ISI DAYA"
             value={`${isiKwh.toFixed(0)} Wh`}
           />
 
           <Card
             icon={<FaBolt />}
             title="TOTAL CHARGER"
-            value={`${totalWatt.toFixed(1)}`}
+            value={`${totalCharger.toFixed(0)} W`}
           />
 
           <Card
@@ -267,7 +271,7 @@ export default function App() {
             />
 
             <Input
-              label="Kemampuan Charger"
+              label="Kemampuan Charger (Ampere)"
               value={kemampuanCharger}
               setValue={setKemampuanCharger}
             />
@@ -289,7 +293,7 @@ export default function App() {
             </h2>
 
             <Result
-              label="Isi kWh"
+              label="Isi Battery"
               value={`${isiKwh.toFixed(0)} Wh`}
             />
 
@@ -299,8 +303,8 @@ export default function App() {
             />
 
             <Result
-              label="Charger CRI"
-              value={`${chargerCRI}`}
+              label="Total Charger"
+              value={`${totalCharger.toFixed(0)} Watt`}
             />
 
             <Result
@@ -379,8 +383,8 @@ export default function App() {
             />
 
             <Sys
-              label="Tipe Charger"
-              value="AC Fast Charging"
+              label="Konversi Charger"
+              value="Ampere × 84"
             />
 
             <Sys

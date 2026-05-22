@@ -19,11 +19,14 @@ export default function App() {
      DATA SISTEM
   ========================== */
 
-  // kapasitas battery dalam Wh
+  // kapasitas battery
   const kapasitasBattery = 3774;
 
   // faktor charger
   const chargerCRI = 1.4;
+
+  // ppn SPKLU
+  const ppn = 0.12;
 
   /* =========================
      STATE
@@ -33,84 +36,59 @@ export default function App() {
     useState(40);
 
   const [kemampuanCharger, setKemampuanCharger] =
-    useState(28);
+    useState(10);
 
   /* =========================
      PERHITUNGAN
   ========================== */
 
-// =========================
-// PERHITUNGAN
-// =========================
+  // isi daya battery
+  const isiKwh =
+    kapasitasBattery *
+    ((100 - sisaBattery) / 100);
 
-// kapasitas terisi
-const isiKwh =
-  kapasitasBattery *
-  ((100 - sisaBattery) / 100);
-
-// total watt charger
-const totalWatt =
-  kemampuanCharger *
-  chargerCRI;
-
-// progress
-const progress =
-  100 - sisaBattery;
-
-/*
-  ESTIMASI DURASI
-
-  rumus:
-  isi kWh /
-  (kemampuan charger × chargerCRI)
-
-  hasil = menit
-*/
-
-const estimasiMenit =
-  isiKwh /
-  (
+  // total watt charger
+  const totalWatt =
     kemampuanCharger *
-    chargerCRI
-  );
+    chargerCRI;
 
-// format jam menit
-const jam =
-  Math.floor(estimasiMenit / 60);
+  // progress
+  const progress =
+    100 - sisaBattery;
 
-const menit =
-  Math.round(estimasiMenit % 60);
+  /*
+    ESTIMASI DURASI
 
-let formatDurasi = "";
+    rumus:
+    isi kWh /
+    (kemampuan charger × chargerCRI)
 
-if (jam <= 0) {
+    hasil = menit
+  */
 
-  formatDurasi =
-    `${menit} Menit`;
+  const estimasiMenit =
+    isiKwh /
+    (
+      kemampuanCharger *
+      chargerCRI
+    );
 
-} else {
+  // format jam menit
 
-  formatDurasi =
-    `${jam} Jam ${menit} Menit`;
-}
-  /* =========================
-     FORMAT DURASI
-  ========================== */
+  const jam =
+    Math.floor(estimasiMenit / 60);
+
+  const menit =
+    Math.round(estimasiMenit % 60);
 
   let formatDurasi = "";
 
-  if (estimasiMenit < 60) {
+  if (jam <= 0) {
 
     formatDurasi =
-      `${estimasiMenit.toFixed(1)} Menit`;
+      `${menit} Menit`;
 
   } else {
-
-    const jam =
-      Math.floor(estimasiMenit / 60);
-
-    const menit =
-      Math.round(estimasiMenit % 60);
 
     formatDurasi =
       `${jam} Jam ${menit} Menit`;
@@ -120,11 +98,18 @@ if (jam <= 0) {
      BIAYA
   ========================== */
 
-  const biayaSPKLU =
-    isiKwh * 2466;
+  // biaya dasar
+  const biayaDasarSPKLU =
+    (isiKwh / 1000) * 2466;
 
+  // include ppn 12%
+  const biayaSPKLU =
+    biayaDasarSPKLU +
+    (biayaDasarSPKLU * ppn);
+
+  // biaya rumah
   const biayaRumah =
-    isiKwh * 1444.7;
+    (isiKwh / 1000) * 1444.7;
 
   return (
 
@@ -246,13 +231,13 @@ if (jam <= 0) {
           <Card
             icon={<FaBolt />}
             title="ISI KWH"
-            value={`${isiKwh.toFixed(2)} kWh`}
+            value={`${isiKwh.toFixed(0)} Wh`}
           />
 
           <Card
             icon={<FaBolt />}
-            title="TOTAL WATT"
-            value={`${totalWatt.toFixed(0)} W`}
+            title="TOTAL CHARGER"
+            value={`${totalWatt.toFixed(1)}`}
           />
 
           <Card
@@ -305,12 +290,17 @@ if (jam <= 0) {
 
             <Result
               label="Isi kWh"
-              value={`${isiKwh.toFixed(2)} kWh`}
+              value={`${isiKwh.toFixed(0)} Wh`}
             />
 
             <Result
-              label="Total Watt Charger"
-              value={`${totalWatt.toFixed(0)} Watt`}
+              label="Kemampuan Charger"
+              value={`${kemampuanCharger} A`}
+            />
+
+            <Result
+              label="Charger CRI"
+              value={`${chargerCRI}`}
             />
 
             <Result
@@ -319,7 +309,7 @@ if (jam <= 0) {
             />
 
             <Result
-              label="Biaya SPKLU"
+              label="Biaya SPKLU + PPN"
               value={`Rp ${biayaSPKLU.toFixed(0)}`}
               red
             />
@@ -380,7 +370,7 @@ if (jam <= 0) {
 
             <Sys
               label="Kapasitas Battery"
-              value="3.774 kWh"
+              value="3774 Wh"
             />
 
             <Sys

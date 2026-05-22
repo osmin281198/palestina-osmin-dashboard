@@ -19,9 +19,11 @@ export default function App() {
      DATA SISTEM
   ========================== */
 
+  // kapasitas battery dalam Wh
   const kapasitasBattery = 3774;
+
+  // faktor charger
   const chargerCRI = 1.4;
-  const efisiensi = 0.92;
 
   /* =========================
      STATE
@@ -37,9 +39,9 @@ export default function App() {
      PERHITUNGAN
   ========================== */
 
-  // kebutuhan isi battery
+  // konversi Wh -> kWh
   const isiKwh =
-    kapasitasBattery *
+    (kapasitasBattery / 1000) *
     ((100 - sisaBattery) / 100);
 
   // total watt charger
@@ -48,24 +50,21 @@ export default function App() {
     kemampuanCharger *
     60;
 
-  // progress charging
+  // progress
   const progress =
     100 - sisaBattery;
 
   /*
-    RUMUS BARU
-
-    estimasi jam =
+    estimasi:
     isiKwh /
-    (kemampuan charger × chargerCRI × efisiensi)
+    (kemampuan charger × chargerCRI)
   */
 
   const estimasiJam =
     isiKwh /
     (
       kemampuanCharger *
-      chargerCRI *
-      efisiensi
+      chargerCRI
     );
 
   const estimasiMenit =
@@ -80,7 +79,7 @@ export default function App() {
   if (estimasiMenit < 60) {
 
     formatDurasi =
-      `${Math.round(estimasiMenit)} Menit`;
+      `${estimasiMenit.toFixed(1)} Menit`;
 
   } else {
 
@@ -99,14 +98,10 @@ export default function App() {
   ========================== */
 
   const biayaSPKLU =
-    (isiKwh / 1000) * 2466;
+    isiKwh * 2466;
 
   const biayaRumah =
-    (isiKwh / 1000) * 1444.7;
-
-  /* =========================
-     RETURN
-  ========================== */
+    isiKwh * 1444.7;
 
   return (
 
@@ -162,7 +157,7 @@ export default function App() {
 
         </div>
 
-        {/* FOOTER SIDEBAR */}
+        {/* FOOTER */}
 
         <div className="bg-zinc-900 rounded-3xl p-4 text-center border border-zinc-800">
 
@@ -215,7 +210,7 @@ export default function App() {
 
         </div>
 
-        {/* ================= TOP CARD ================= */}
+        {/* ================= CARD ================= */}
 
         <div className="grid md:grid-cols-4 gap-4 mb-6">
 
@@ -228,13 +223,13 @@ export default function App() {
           <Card
             icon={<FaBolt />}
             title="ISI KWH"
-            value={isiKwh.toFixed(0)}
+            value={`${isiKwh.toFixed(2)} kWh`}
           />
 
           <Card
             icon={<FaBolt />}
             title="TOTAL WATT"
-            value={totalWatt.toFixed(0)}
+            value={`${totalWatt.toFixed(0)} W`}
           />
 
           <Card
@@ -277,7 +272,7 @@ export default function App() {
 
           </div>
 
-          {/* HASIL */}
+          {/* RESULT */}
 
           <div className="bg-zinc-950 border border-zinc-800 rounded-[30px] p-6">
 
@@ -286,8 +281,8 @@ export default function App() {
             </h2>
 
             <Result
-              label="Isi kWh SPKLU K2"
-              value={`${isiKwh.toFixed(0)} kWh`}
+              label="Isi kWh"
+              value={`${isiKwh.toFixed(2)} kWh`}
             />
 
             <Result
@@ -362,7 +357,7 @@ export default function App() {
 
             <Sys
               label="Kapasitas Battery"
-              value="3,774 Wh"
+              value="3.774 kWh"
             />
 
             <Sys
@@ -372,7 +367,7 @@ export default function App() {
 
             <Sys
               label="Tipe Charger"
-              value="AC"
+              value="AC Fast Charging"
             />
 
             <Sys
@@ -392,7 +387,7 @@ export default function App() {
 }
 
 /* =========================
-   COMPONENT MENU
+   MENU
 ========================== */
 
 function Menu({
@@ -443,7 +438,7 @@ function Card({
         {title}
       </p>
 
-      <h1 className="text-5xl font-black mt-3 text-green-500">
+      <h1 className="text-4xl font-black mt-3 text-green-500">
         {value}
       </h1>
 
@@ -500,7 +495,7 @@ function Result({
         {label}
       </span>
 
-      <span className={`font-black text-3xl ${
+      <span className={`font-black text-2xl ${
         red
           ? "text-red-500"
           : "text-green-500"
